@@ -31,7 +31,7 @@ export default function AuthPage() {
           className="object-cover object-center h-full w-full absolute inset-0"
         />
         <div className="absolute inset-0 bg-blue-700/50" />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
+        <div className="absolute inset-0 flex flex-col items-center justify-start text-center px-8 pt-36"> 
           <div className="mb-6 flex justify-center">
             <Image
               src={Logo}

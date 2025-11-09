@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { MessageSquare, Clock, Globe2 } from 'lucide-react';
 
+import Header from '@/components/ui/Header';
+
 interface ChatPreview {
   id: number;
   name: string;
@@ -46,20 +48,20 @@ export default function ChatListPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 text-gray-800">
       {/* Header */}
-      <header className="flex justify-between items-center px-6 py-4 bg-white shadow-sm">
-        <h1 className="text-2xl font-bold text-blue-600 flex items-center gap-2">
-          <Globe2 size={22} /> Minhas Conversas
-        </h1>
-        <button
-          onClick={() => router.push('/dashboard')}
-          className="text-sm font-medium text-blue-600 hover:underline"
-        >
-          + Nova conversa
-        </button>
-      </header>
+      <Header />
 
       {/* Lista de chats */}
-      <main className="max-w-2xl mx-auto py-6 px-4">
+      <main className="max-w-6xl mx-auto py-6 px-4">
+        {/* Novo chat */}
+        <div className='flex justify-end'>
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="text-sm font-medium text-blue-600 hover:underline border border-blue-600 px-4 py-2 mb-6 rounded-lg hover:bg-blue-50 transition flex items-center gap-2"
+          >
+            + Nova conversa
+          </button>
+        </div>
+
         {chats.map((chat) => (
           <div
             key={chat.id}

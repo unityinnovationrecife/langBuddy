@@ -1,10 +1,14 @@
 'use client';
 
+//component
+import Header from '@/components/ui/Header';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Globe2, MessageCircle, Search, Bell, User2, Settings, Users } from 'lucide-react';
 import Image from 'next/image';
-import Logo from '@/assets/logo.png';
+
+import { Globe2, MessageCircle, Search, Bell, User2, Settings, Users } from 'lucide-react';
+import Banner from '@/assets/banner.png';
 
 interface User {
   id: number;
@@ -43,30 +47,21 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 text-gray-800 flex flex-col">
       {/* HEADER */}
-      <header className="flex justify-between items-center px-6 py-4 bg-white shadow-md border-b border-blue-100">
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold text-blue-600 flex items-center gap-2">
-            LangBuddy
-          </h1>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <button className="text-blue-600 hover:text-blue-700 transition">
-            <Bell size={22} />
-          </button>
-          <button onClick={() => router.push('/profile/me')} className="text-blue-600 hover:text-blue-700 transition">
-            <User2 size={22} />
-          </button>
-          <button className="text-blue-600 hover:text-blue-700 transition">
-            <Settings size={22} />
-          </button>
-        </div>
-      </header>
+      <Header />
 
       <main className="max-w-6xl mx-auto py-10 px-6 w-full flex flex-col gap-10">
         {/* BANNER */}
         <section className="relative bg-blue-600 text-white rounded-2xl shadow-md p-8 overflow-hidden">
-          <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1522199710521-72d69614c702?auto=format&fit=crop&w=1920&q=80')] bg-cover" />
+          {/* Fundo com imagem local */}
+          <Image
+            src={Banner}
+            alt="Banner LangBuddy"
+            fill
+            className="object-cover opacity-25"
+            priority
+          />
+
+          {/* Conteúdo do banner */}
           <div className="relative z-10">
             <h2 className="text-3xl font-bold mb-2">Bem-vindo(a) ao LangBuddy</h2>
             <p className="text-sm text-blue-100 mb-5">
@@ -74,7 +69,7 @@ export default function DashboardPage() {
             </p>
             <div className="flex flex-wrap gap-3">
               <a
-                href='#users-list'
+                href="#users-list"
                 className="bg-white text-blue-600 px-4 py-2 rounded-full font-medium hover:bg-blue-50 transition"
               >
                 Explorar usuários
@@ -82,6 +77,7 @@ export default function DashboardPage() {
             </div>
           </div>
         </section>
+
 
         {/* BARRA DE BUSCA */}
         <div className="flex items-center bg-white rounded-full shadow-md px-4 py-2 w-full max-w-lg mx-auto">
