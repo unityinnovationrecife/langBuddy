@@ -22,7 +22,7 @@ export async function PATCH(
 
     if (!friendRequest) {
       return new NextResponse("Friend request not found", { status: 404 });
-    }
+    
 
     if (friendRequest.receiverId !== session.user.id) {
       return new NextResponse("Unauthorized", { status: 401 });
