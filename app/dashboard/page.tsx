@@ -3,16 +3,17 @@
 //component
 import Header from '@/components/ui/Header';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 import { Globe2, MessageCircle, Search, Bell, User2, Settings, Users } from 'lucide-react';
 import Banner from '@/assets/banner.png';
+import api from '@/services/api';
 
 interface User {
   id: number;
-  name: string;
+  nome: string;
   nativeLang: string;
   learningLang: string;
   flag: string;
@@ -21,25 +22,49 @@ interface User {
 export default function DashboardPage() {
   const router = useRouter();
   const [search, setSearch] = useState('');
+  const [usuarios, setUsuarios] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  //conexão com API e fetch dos usuários seriam feitos aqui
+
+  useEffect(() => {
+    const fetchUsuarios = async () => {
+      try {
+        const response = await api.get('/usuarios/');
+        if (response.data.status === 'success') {
+          setUsuarios(response.data.data);
+          console.log('Usuários carregados:', response.data.data);
+        } else {
+          console.error('Erro:', response.data.message);
+        }
+      } catch (error) {
+        console.error('Error ao buscar usuário:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchUsuarios();
+  }, []);
 
   // Usuários mockados
   const users: User[] = [
-    { id: 1, name: 'Samuel Muniz', nativeLang: 'Inglês', learningLang: 'Português', flag: '🇺🇸' },
-    { id: 2, name: 'Eudes Jordão', nativeLang: 'Português', learningLang: 'Espanhol', flag: '🇧🇷' },
-    { id: 3, name: 'Júnior', nativeLang: 'Coreano', learningLang: 'Inglês', flag: '🇰🇷' },
-    { id: 4, name: 'Joana Silva', nativeLang: 'Espanhol', learningLang: 'Inglês', flag: '🇪🇸' },
-    { id: 5, name: 'Liu Wei', nativeLang: 'Chinês', learningLang: 'Português', flag: '🇨🇳' },
-    { id: 6, name: 'Fatima Khan', nativeLang: 'Urdu', learningLang: 'Inglês', flag: '🇵🇰' },
-    { id: 7, name: 'Hans Müller', nativeLang: 'Alemão', learningLang: 'Espanhol', flag: '🇩🇪' },
-    { id: 8, name: 'Sofia Rossi', nativeLang: 'Italiano', learningLang: 'Inglês', flag: '🇮🇹' },
-    { id: 9, name: 'Yuki Tanaka', nativeLang: 'Japonês', learningLang: 'Português', flag: '🇯🇵' },
-    { id: 10, name: 'Olivia Brown', nativeLang: 'Inglês', learningLang: 'Francês', flag: '🇬🇧' },
-    { id: 11, name: 'Carlos García', nativeLang: 'Espanhol', learningLang: 'Alemão', flag: '🇪🇸' },
-    { id: 12, name: 'Amina Yusuf', nativeLang: 'Árabe', learningLang: 'Inglês', flag: '🇸🇦' },
+    { id: 1, nome: 'Samuel Muniz', nativeLang: 'Inglês', learningLang: 'Português', flag: '🇺🇸' },
+    { id: 2, nome: 'Eudes Jordão', nativeLang: 'Português', learningLang: 'Espanhol', flag: '🇧🇷' },
+    { id: 3, nome: 'Júnior', nativeLang: 'Coreano', learningLang: 'Inglês', flag: '🇰🇷' },
+    { id: 4, nome: 'Joana Silva', nativeLang: 'Espanhol', learningLang: 'Inglês', flag: '🇪🇸' },
+    { id: 5, nome: 'Liu Wei', nativeLang: 'Chinês', learningLang: 'Português', flag: '🇨🇳' },
+    { id: 6, nome: 'Fatima Khan', nativeLang: 'Urdu', learningLang: 'Inglês', flag: '🇵🇰' },
+    { id: 7, nome: 'Hans Müller', nativeLang: 'Alemão', learningLang: 'Espanhol', flag: '🇩🇪' },
+    { id: 8, nome: 'Sofia Rossi', nativeLang: 'Italiano', learningLang: 'Inglês', flag: '🇮🇹' },
+    { id: 9, nome: 'Yuki Tanaka', nativeLang: 'Japonês', learningLang: 'Português', flag: '🇯🇵' },
+    { id: 10, nome: 'Olivia Brown', nativeLang: 'Inglês', learningLang: 'Francês', flag: '🇬🇧' },
+    { id: 11, nome: 'Carlos García', nativeLang: 'Espanhol', learningLang: 'Alemão', flag: '🇪🇸' },
+    { id: 12, nome: 'Amina Yusuf', nativeLang: 'Árabe', learningLang: 'Inglês', flag: '🇸🇦' },
   ];
 
   const filteredUsers = users.filter((u) =>
-    u.name.toLowerCase().includes(search.toLowerCase()) ||
+    u.nome.toLowerCase().includes(search.toLowerCase()) ||
     u.learningLang.toLowerCase().includes(search.toLowerCase()) ||
     u.nativeLang.toLowerCase().includes(search.toLowerCase())
   );
@@ -63,7 +88,8 @@ export default function DashboardPage() {
 
           {/* Conteúdo do banner */}
           <div className="relative z-10">
-            <h2 className="text-3xl font-bold mb-2">Bem-vindo(a) ao LangBuddy</h2>
+            <h1 className="text-4xl font-bold mb-2">{usuarios[0]?.nome || 'Usuário'}</h1>
+            <h2 className="text-xl font-bold mb-2">Bem-vindo(a) ao LangBuddy</h2>
             <p className="text-sm text-blue-100 mb-5">
               Conecte-se com pessoas do mundo todo, pratique idiomas e faça novas amizades!
             </p>
@@ -125,7 +151,7 @@ export default function DashboardPage() {
                 key={user.id}
                 className="bg-white rounded-2xl shadow-md p-5 flex flex-col items-center text-center hover:shadow-lg transition"
               >
-                <h3 className="text-xl font-semibold text-blue-700">{user.name}</h3>
+                <h3 className="text-xl font-semibold text-blue-700">{user.nome}</h3>
                 <span className="text-xl mb-2">{user.flag}</span>
                 <p className="text-sm text-gray-500">
                   Nativo em <strong>{user.nativeLang}</strong>
