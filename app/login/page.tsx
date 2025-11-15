@@ -67,26 +67,25 @@ export default function login() {
     e.preventDefault();
     setLoading(true);
 
-    const senhaHash = await bcrypt.hash(form.senha, 10);
-
     try {
       if (isLogin) {
-        const response = await api.post('/login/', {
+        const response = await api.post('/login', {
           email: form.email,
-          senha: senhaHash,
+          senha: form.senha, // <-- senha pura
         });
 
-        if (response.data.status === 'success') {
+        if (response.data.message === 'Login bem-sucedido!') {
           localStorage.setItem('token', response.data.token);
-          router.push('/dashboard');
+          router.push('/inicio');
         } else {
-          alert(response.data.message || 'Erro ao fazer login.');
+          alert(response.data.error || 'Erro ao fazer login.');
         }
+
       } else {
-        const response = await api.post('/usuarios', {
+        const response = await api.post('/cadastro', {
           nome: form.nome,
           email: form.email,
-          senha: senhaHash,
+          senha: form.senha, // <-- senha pura
           idioma_nativo: form.idioma_nativo,
           idioma_aprendendo: form.idioma_aprendendo,
           pais: form.pais,
@@ -96,7 +95,7 @@ export default function login() {
           telefone: form.telefone,
         });
 
-        if (response.data.status === 'Usuário criado com sucesso') {
+        if (response.data.message === 'Usuário criado com sucesso') {
           alert('Conta criada com sucesso!');
           setIsLogin(true);
           setForm({
@@ -112,7 +111,7 @@ export default function login() {
             telefone: '',
           });
         } else {
-          alert(response.data.message || 'Erro ao cadastrar.');
+          alert(response.data.error || 'Erro ao cadastrar.');
         }
       }
     } catch (error: any) {
@@ -127,6 +126,7 @@ export default function login() {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-blue-600 to-blue-400">

@@ -1,74 +1,80 @@
+'use client';
+
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { 
-  Home, 
-  Users, 
-  Calendar, 
-  MessageCircle, 
-  Settings,
-  User,
-  UserPlus,
-  LogOut
-} from 'lucide-react';
-
-interface SidebarLinkProps {
-  href: string;
-  icon: React.ReactNode;
-  label: string;
-  isActive: boolean;
-}
-
-const SidebarLink = ({ href, icon, label, isActive }: SidebarLinkProps) => (
-  <Link
-    href={href}
-    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-      isActive
-        ? 'bg-blue-100 text-blue-600'
-        : 'text-gray-600 hover:bg-gray-100'
-    }`}
-  >
-    {icon}
-    <span className="font-medium">{label}</span>
-  </Link>
-);
+import Image from 'next/image';
+import Logo from '@/assets/logo-side.png';
+import { Home, User, Globe2, Users, Star } from 'lucide-react';
 
 export default function Sidebar() {
-  const pathname = usePathname();
-
-  const links = [
-    { href: '/home', icon: <Home size={20} />, label: 'Início' },
-    { href: '/match', icon: <Users size={20} />, label: 'Match' },
-    { href: '/agenda', icon: <Calendar size={20} />, label: 'Agenda' },
-    { href: '/chat', icon: <MessageCircle size={20} />, label: 'Chat' },
-    { href: '/friends', icon: <UserPlus size={20} />, label: 'Amigos' },
-    { href: '/perfil/me', icon: <User size={20} />, label: 'Perfil' },
-    { href: '/settings', icon: <Settings size={20} />, label: 'Configurações' },
-  ];
-
+  // Aqui você pode adicionar lógica para detectar rota ativa futuramente
   return (
-    <aside className="w-64 bg-white h-screen border-r border-gray-200 flex flex-col">
-      <div className="p-6">
-        <h1 className="text-2xl font-bold text-blue-600">LangBuddy</h1>
-      </div>
+    <aside className="hidden lg:flex lg:flex-col w-64 bg-white min-h-screen px-3 py-6 fixed z-50 shadow-sm">
+      {/* Logo */}
+      <a href="/inicio">
+        <div className="mb-8 flex justify-center">
+          <Image src={Logo} alt="LangBuddy Logo" width={180} height={40} />
+        </div>
+      </a>
 
-      <nav className="flex-1 px-3 space-y-1">
-        {links.map((link) => (
-          <SidebarLink
-            key={link.href}
-            href={link.href}
-            icon={link.icon}
-            label={link.label}
-            isActive={pathname === link.href}
-          />
-        ))}
+      {/* Navegação */}
+      <nav className="flex-1 mt-4">
+        <ul className="flex flex-col gap-3">
+          <li>
+            <Link
+              href="/inicio"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-700 font-semibold hover:bg-blue-100 hover:text-blue-800 transition"
+            >
+              <Home size={22} /> Home
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/perfil"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-600 font-medium hover:bg-blue-100 hover:text-blue-700 transition"
+            >
+              <User size={22} /> Meu Perfil
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/discover"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-600 font-medium hover:bg-blue-100 hover:text-blue-700 transition"
+            >
+              <Globe2 size={22} /> Descobrir
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/friends"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-600 font-medium hover:bg-blue-100 hover:text-blue-700 transition"
+            >
+              <Users size={22} /> Amigos
+            </Link>
+          </li>
+        </ul>
       </nav>
 
-      <div className="p-4 border-t border-gray-200">
-        <button className="flex items-center gap-3 text-red-600 px-4 py-3 w-full rounded-lg hover:bg-red-50 transition-all">
-          <LogOut size={20} />
-          <span className="font-medium">Sair</span>
-        </button>
+      {/* Ações */}
+      <div className="mt-8 px-1">
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl shadow-lg p-5 flex flex-col gap-4">
+          {/* Título do plano */}
+          <div className="flex flex-col items-start justify-between gap-2">
+            <h3 className=" font-semibold">Plano Atual:</h3>
+            <h3 className="text-xl font-bold text-blue-100">Gratuito</h3>
+
+          </div>
+
+
+          {/* Botão de upgrade */}
+          <Link
+            href="/premium"
+            className="bg-white text-blue-600 font-semibold rounded-lg py-2 text-center hover:bg-blue-50 transition"
+          >
+            Fazer Upgrade
+          </Link>
+        </div>
       </div>
+
     </aside>
   );
 }
