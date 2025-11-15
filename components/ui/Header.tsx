@@ -45,9 +45,11 @@ export default function Header() {
                     </button>
 
                     {/* Avatar */}
-                    <div className="w-10 h-10 rounded-full overflow-hidden">
-                        <Image src={User} alt="avatar" width={40} height={40} priority />
-                    </div>
+                    <a href="/perfil">
+                        <div className="w-10 h-10 rounded-full overflow-hidden">
+                            <Image src={User} alt="avatar" width={40} height={40} priority />
+                        </div>
+                    </a>
                 </div>
             </div>
         </header>
