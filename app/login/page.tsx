@@ -1,5 +1,5 @@
 'use client';
-
+import bcrypt from 'bcryptjs';
 import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -22,7 +22,7 @@ const idiomas = [
   'Português', 'Punjabi', 'Quíchua', 'Romeno', 'Russo', 'Samoano', 'Sérvio',
   'Sérvio-Croata', 'Sinhala', 'Somali', 'Suaíli', 'Sueco', 'Tailandês', 'Tâmil',
   'Tcheco', 'Telugo', 'Tibetano', 'Tonganês', 'Turco', 'Ucraniano', 'Urdu',
-  'Usbeque', 'Vietnamita', 'Xhosa', 'Zulu', 'Creole Haitiano', 'Fidjiano', 'Guarani'
+  'Usbeque', 'Vietnamita', 'Xhosa', 'Zulu', 'Creole Haitiano', 'Fidjiano',
 ];
 
 
@@ -33,31 +33,31 @@ const interessesLista = [
   'Natureza', 'Fotografia', 'Estudos', 'Animes', 'Animais'
 ];
 
-export default function AuthPage() {
+export default function login() {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
   const [form, setForm] = useState({
     nome: '',
     email: '',
-    password: '',
-    idiomaNativo: '',
-    idiomaAprendendo: '',
-    country: '',
-    state: '',
-    city: '',
+    senha: '',
+    idioma_nativo: '',
+    idioma_aprendendo: '',
+    pais: '',
+    estado: '',
+    cidade: '',
     telefone: '',
     interesses: [] as string[],
-    descricao: '',
   });
+
   const [loading, setLoading] = useState(false);
 
   const toggleInteresse = (interesse: string) => {
-    setForm((prev) => {
+    setForm((prev: any) => {
       const jaSelecionado = prev.interesses.includes(interesse);
       return {
         ...prev,
         interesses: jaSelecionado
-          ? prev.interesses.filter((i) => i !== interesse)
+          ? prev.interesses.filter((i: any) => i !== interesse)
           : [...prev.interesses, interesse],
       };
     });
@@ -67,11 +67,13 @@ export default function AuthPage() {
     e.preventDefault();
     setLoading(true);
 
+    const senhaHash = await bcrypt.hash(form.senha, 10);
+
     try {
       if (isLogin) {
         const response = await api.post('/login/', {
           email: form.email,
-          senha: form.password,
+          senha: senhaHash,
         });
 
         if (response.data.status === 'success') {
@@ -81,43 +83,46 @@ export default function AuthPage() {
           alert(response.data.message || 'Erro ao fazer login.');
         }
       } else {
-        const response = await api.post('/usuarios/', {
+        const response = await api.post('/usuarios', {
           nome: form.nome,
           email: form.email,
-          senha: form.password,
-          idiomaNativo: form.idiomaNativo,
-          idiomaAprendendo: form.idiomaAprendendo,
-          country: form.country,
-          state: form.state,
-          city: form.city,
+          senha: senhaHash,
+          idioma_nativo: form.idioma_nativo,
+          idioma_aprendendo: form.idioma_aprendendo,
+          pais: form.pais,
+          estado: form.estado,
+          cidade: form.cidade,
           interesses: form.interesses,
-          descricao: form.interesses,
           telefone: form.telefone,
         });
 
-        if (response.data.status === 'success') {
+        if (response.data.status === 'Usuário criado com sucesso') {
           alert('Conta criada com sucesso!');
           setIsLogin(true);
           setForm({
             nome: '',
             email: '',
-            password: '',
-            idiomaNativo: '',
-            idiomaAprendendo: '',
-            country: '',
-            state: '',
-            city: '',
+            senha: '',
+            idioma_nativo: '',
+            idioma_aprendendo: '',
+            pais: '',
+            estado: '',
+            cidade: '',
             interesses: [],
             telefone: '',
-            descricao: '',
           });
         } else {
           alert(response.data.message || 'Erro ao cadastrar.');
         }
       }
-    } catch (error) {
-      console.error('Erro:', error);
-      alert('Falha ao conectar com o servidor.');
+    } catch (error: any) {
+      if (error.response?.status === 409) {
+        alert("Já existe uma conta com este email!");
+        return;
+      }
+
+      console.error(error);
+      alert("Erro ao criar conta");
     } finally {
       setLoading(false);
     }
@@ -129,6 +134,7 @@ export default function AuthPage() {
       <div className="hidden md:flex w-2/5 items-center justify-center bg-blue-700 relative overflow-hidden">
         <Image
           src={LangImage}
+          loading="eager"
           alt="LangBuddy illustration"
           className="object-cover object-center h-full w-full absolute inset-0"
         />
@@ -154,22 +160,20 @@ export default function AuthPage() {
             <div className="bg-gray-200 rounded-full p-1 flex w-64 shadow-inner">
               <button
                 type="button"
-                className={`flex-1 py-2 rounded-full text-sm font-medium transition ${
-                  isLogin
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'text-gray-600 hover:text-blue-600'
-                }`}
+                className={`flex-1 py-2 rounded-full text-sm font-medium transition ${isLogin
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'text-gray-600 hover:text-blue-600'
+                  }`}
                 onClick={() => setIsLogin(true)}
               >
                 Login
               </button>
               <button
                 type="button"
-                className={`flex-1 py-2 rounded-full text-sm font-medium transition ${
-                  !isLogin
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'text-gray-600 hover:text-blue-600'
-                }`}
+                className={`flex-1 py-2 rounded-full text-sm font-medium transition ${!isLogin
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'text-gray-600 hover:text-blue-600'
+                  }`}
                 onClick={() => setIsLogin(false)}
               >
                 Cadastro
@@ -197,8 +201,8 @@ export default function AuthPage() {
                   <div>
                     <label className="block text-sm font-medium mb-1">Idioma nativo</label>
                     <select
-                      value={form.idiomaNativo}
-                      onChange={(e) => setForm({ ...form, idiomaNativo: e.target.value })}
+                      value={form.idioma_nativo}
+                      onChange={(e) => setForm({ ...form, idioma_nativo: e.target.value })}
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                       required
                     >
@@ -214,8 +218,8 @@ export default function AuthPage() {
                   <div>
                     <label className="block text-sm font-medium mb-1">Idioma que está aprendendo</label>
                     <select
-                      value={form.idiomaAprendendo}
-                      onChange={(e) => setForm({ ...form, idiomaAprendendo: e.target.value })}
+                      value={form.idioma_aprendendo}
+                      onChange={(e) => setForm({ ...form, idioma_aprendendo: e.target.value })}
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                       required
                     >
@@ -233,22 +237,22 @@ export default function AuthPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <input
                     placeholder="País"
-                    value={form.country}
-                    onChange={(e) => setForm({ ...form, country: e.target.value })}
+                    value={form.pais}
+                    onChange={(e) => setForm({ ...form, pais: e.target.value })}
                     className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                     required
                   />
                   <input
                     placeholder="Estado"
-                    value={form.state}
-                    onChange={(e) => setForm({ ...form, state: e.target.value })}
+                    value={form.estado}
+                    onChange={(e) => setForm({ ...form, estado: e.target.value })}
                     className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                     required
                   />
                   <input
                     placeholder="Cidade"
-                    value={form.city}
-                    onChange={(e) => setForm({ ...form, city: e.target.value })}
+                    value={form.cidade}
+                    onChange={(e) => setForm({ ...form, cidade: e.target.value })}
                     className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                     required
                   />
@@ -263,11 +267,10 @@ export default function AuthPage() {
                         type="button"
                         key={interesse}
                         onClick={() => toggleInteresse(interesse)}
-                        className={`px-3 py-2 text-sm rounded-lg border transition ${
-                          form.interesses.includes(interesse)
-                            ? 'bg-blue-600 text-white border-blue-600'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-blue-400'
-                        }`}
+                        className={`px-3 py-2 text-sm rounded-lg border transition ${form.interesses.includes(interesse)
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : 'bg-white text-gray-700 border-gray-300 hover:border-blue-400'
+                          }`}
                       >
                         {interesse}
                       </button>
@@ -277,7 +280,7 @@ export default function AuthPage() {
               </>
             )}
 
-            
+
             <div>
               <label className="block text-sm font-medium mb-1">E-mail</label>
               <input
@@ -289,15 +292,16 @@ export default function AuthPage() {
               />
             </div>
 
-            
+
 
             <div>
               <label className="block text-sm font-medium mb-1">Senha</label>
               <input
                 type="password"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                value={form.senha}
+                onChange={(e) => setForm({ ...form, senha: e.target.value })}
                 className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                autoComplete="current-password"
                 required
               />
             </div>
