@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Header from '@/components/ui/Header';
 import Sidebar from '@/components/ui/Sidebar';
-import { Globe2, MessageCircle, Users, Video } from 'lucide-react';
+import { Globe2, MessageCircle, Users, Video, Star, Award } from 'lucide-react';
 import Banner from '@/assets/banner.png';
 import api from '@/services/api';
 
@@ -16,7 +16,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchUserLogado = async () => {
       try {
-        const res = await api.get("/me"); // rota do backend
+        const res = await api.get("/me");
         setUsuarioLogado(res.data);
       } catch (error) {
         console.error("Erro ao buscar usuário logado:", error);
@@ -26,6 +26,7 @@ export default function DashboardPage() {
     fetchUserLogado();
   }, []);
 
+  // Vídeos de onboarding / tutorial do app
   const videoTips = [
     {
       id: 1,
@@ -35,25 +36,37 @@ export default function DashboardPage() {
     },
     {
       id: 2,
-      title: "Dicas para memorizar vocabulário",
+      title: "Como memorizar vocabulário de forma divertida",
       thumbnail: "https://img.youtube.com/vi/3GwjfUFyY6M/0.jpg",
       url: "https://www.youtube.com/watch?v=3GwjfUFyY6M",
     },
+    {
+      id: 3,
+      title: "Gamificação: pontos, streaks e badges",
+      thumbnail: "https://img.youtube.com/vi/tVj0ZTS4WF4/0.jpg",
+      url: "https://www.youtube.com/watch?v=tVj0ZTS4WF4",
+    },
   ];
+
+  // Exemplos de progresso/gamificação
+  const userProgress = {
+    level: "Intermediário",
+    points: 450,
+    streak: 5,
+    badges: ["Primeira conversa", "Desafio diário", "Amigo do mês"]
+  };
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 text-gray-800">
-      {/* SIDEBAR FIXA */}
+      {/* Sidebar fixa */}
       <Sidebar />
 
-      {/* CONTEÚDO PRINCIPAL */}
+      {/* Conteúdo principal */}
       <div className="flex-1 flex flex-col">
-        {/* HEADER FIXO */}
         <Header />
 
-        {/* MAIN */}
         <main className="max-w-7xl mx-auto py-10 px-6 w-full flex flex-col gap-12">
-          {/* BANNER INTERATIVO */}
+          {/* Banner interativo */}
           <section className="relative bg-blue-600 text-white rounded-2xl shadow-lg p-8 overflow-hidden">
             <Image
               src={Banner}
@@ -67,56 +80,45 @@ export default function DashboardPage() {
                 Olá, {usuarioLogado?.nome || "Usuário"}!
               </h1>
               <h2 className="text-xl font-semibold">
-                Vamos praticar idiomas hoje?
+                Explore, pratique e se divirta aprendendo idiomas
               </h2>
               <p className="text-blue-100 text-sm">
-                Explore conteúdos, vídeos, desafios e interaja com a comunidade.
+                Siga sua trilha, complete desafios e veja seu progresso aumentar.
               </p>
-
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => router.push('/discover')}
                   className="bg-white text-blue-600 px-5 py-2 rounded-full font-medium hover:bg-blue-50 transition"
                 >
-                  Começar a explorar 🌎
+                  Começar a explorar
                 </button>
-                <button
-                  onClick={() => router.push('/friends')}
-                  className="bg-white text-blue-600 px-5 py-2 rounded-full font-medium hover:bg-blue-50 transition"
-                >
-                  Meus amigos 👥
-                </button>
+
               </div>
             </div>
           </section>
 
-          {/* PROGRESSO DO USUÁRIO */}
+
+
+          {/* Trilha de aprendizado */}
           <section className="bg-white rounded-2xl shadow-lg p-6">
-            <h3 className="text-xl font-semibold mb-4 text-blue-700">
-              Seu progresso
-            </h3>
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="flex-1 bg-blue-50 p-4 rounded-xl">
-                <p className="text-sm text-gray-600 mb-2">Nível atual</p>
-                <p className="font-bold text-2xl">Intermediário</p>
-              </div>
-              <div className="flex-1 bg-blue-50 p-4 rounded-xl">
-                <p className="text-sm text-gray-600 mb-2">Tempo diário</p>
-                <p className="font-bold text-2xl">25 min/dia</p>
-              </div>
-              <div className="flex-1 bg-blue-50 p-4 rounded-xl">
-                <p className="text-sm text-gray-600 mb-2">Desafios concluídos</p>
-                <p className="font-bold text-2xl">3/5</p>
-              </div>
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">Sua trilha de aprendizado</h3>
+            <div className="flex flex-col md:flex-row items-center gap-4">
+              {["Vocabulário", "Gramática", "Conversação", "Desafios diários"].map((step, idx) => (
+                <div key={idx} className="flex-1 bg-blue-50 rounded-xl p-4 text-center relative">
+                  <p className="font-medium">{step}</p>
+                  <div className={`h-2 w-full bg-gray-200 rounded-full mt-2 overflow-hidden`}>
+                    <div className="h-full bg-blue-600" style={{ width: `${(idx + 1) * 25}%` }} />
+                  </div>
+                  <Award size={20} className="absolute top-2 right-2 text-yellow-400" />
+                </div>
+              ))}
             </div>
           </section>
 
-          {/* VÍDEOS E CONTEÚDOS */}
+          {/* Vídeos tutoriais */}
           <section>
-            <h3 className="text-xl font-semibold mb-4 text-blue-700">
-              Conteúdos recomendados
-            </h3>
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">Vídeos explicativos</h3>
+            <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-6">
               {videoTips.map((video) => (
                 <a
                   key={video.id}
@@ -141,16 +143,7 @@ export default function DashboardPage() {
             </div>
           </section>
 
-          {/* AÇÕES RÁPIDAS */}
-          <section className="flex justify-center gap-6 flex-wrap">
-            <button
-              onClick={() => router.push('/chat')}
-              className="flex flex-col items-center bg-white shadow-md p-5 rounded-xl w-36 hover:shadow-lg transition"
-            >
-              <MessageCircle size={28} className="text-blue-600 mb-2" />
-              <span className="text-sm font-medium">Mensagens</span>
-            </button>
-          </section>
+
         </main>
       </div>
     </div>

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import Logo from '@/assets/logo-side.png';
-import { Home, User, Globe2, Users, Star } from 'lucide-react';
+import { Home, Footprints, Globe2, Users, MessagesSquare } from 'lucide-react';
 
 export default function Sidebar() {
   // Aqui você pode adicionar lógica para detectar rota ativa futuramente
@@ -27,17 +27,10 @@ export default function Sidebar() {
               <Home size={22} /> Home
             </Link>
           </li>
+
           <li>
             <Link
-              href="/perfil"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-600 font-medium hover:bg-blue-100 hover:text-blue-700 transition"
-            >
-              <User size={22} /> Meu Perfil
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/discover"
+              href="/descobrir"
               className="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-600 font-medium hover:bg-blue-100 hover:text-blue-700 transition"
             >
               <Globe2 size={22} /> Descobrir
@@ -45,10 +38,26 @@ export default function Sidebar() {
           </li>
           <li>
             <Link
-              href="/friends"
+              href="/amigos"
               className="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-600 font-medium hover:bg-blue-100 hover:text-blue-700 transition"
             >
               <Users size={22} /> Amigos
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/chat"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-600 font-medium hover:bg-blue-100 hover:text-blue-700 transition"
+            >
+              <MessagesSquare size={22} /> Conversas
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="#"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-600 font-medium hover:bg-blue-100 hover:text-blue-700 transition"
+            >
+              <Footprints size={22} />Aprendizado
             </Link>
           </li>
         </ul>
