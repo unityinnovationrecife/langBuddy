@@ -45,7 +45,7 @@ export default function FriendsPage() {
     <div className="flex min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 text-gray-800">
       <Sidebar />
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col ml-0 md:ml-64">
         <Header />
 
         <main className="flex-1 max-w-7xl mx-auto px-5 py-8 flex flex-col gap-10">

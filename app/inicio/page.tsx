@@ -62,7 +62,7 @@ export default function DashboardPage() {
       <Sidebar />
 
       {/* Conteúdo principal */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col ml-0 md:ml-64">
         <Header />
 
         <main className="max-w-7xl mx-auto py-10 px-6 w-full flex flex-col gap-12">
