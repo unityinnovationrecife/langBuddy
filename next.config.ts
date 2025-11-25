@@ -4,8 +4,14 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
   images: {
-    domains: ['img.youtube.com', 'randomuser.me'], // adicione outros domínios que você usar
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
   },
+
 
 };
 

@@ -1,20 +1,19 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
 
 // Rotas públicas (que não precisam de login)
-const publicRoutes = ["/", "/login"];
+const publicRoutes = ["/", "/login", "/api/login", "/api/cadastro"];
 
-export async function middleware(req: NextRequest) {
+export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Se a rota for pública → libera
-  if (publicRoutes.includes(pathname)) {
+  if (publicRoutes.includes(pathname) || pathname.startsWith("/")) {
     return NextResponse.next();
   }
 
-  // Checa token
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  // Checa se tem token no cookie ou header
+  const token = req.cookies.get('token')?.value || req.headers.get('authorization')?.replace('Bearer ', '');
 
   // Se não tiver token → redireciona para login
   if (!token) {
